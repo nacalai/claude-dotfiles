@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_URL="https://github.com/nacalai/claude-dotfiles.git"
+REPO_DIR="$HOME/projects/claude-dotfiles"
 
 echo "=== Claude Code Dotfiles Setup ==="
+
+# 0. Clone the repo if running via curl (not from local checkout)
+if [ ! -d "$REPO_DIR/.git" ]; then
+  echo "Cloning dotfiles repo..."
+  mkdir -p ~/projects
+  git clone "$REPO_URL" "$REPO_DIR"
+fi
 
 # 1. Install Claude Code if missing
 if ! command -v claude &>/dev/null; then
@@ -86,4 +94,4 @@ done
 
 echo ""
 echo "=== Setup complete ==="
-echo "Run 'claude' to start. Don't forget to authenticate if this is a new Sprite."
+echo "Run 'claude' to start."
