@@ -43,11 +43,25 @@ for f in "$REPO_DIR"/.claude/memory/*.md; do
   copy_if_needed "$f" "$HOME/.claude/projects/-home-sprite/memory/$(basename "$f")"
 done
 
-# 4. Create ~/projects if missing
+# 4. GitHub CLI auth (if GH_TOKEN is set)
+if command -v gh &>/dev/null; then
+  if ! gh auth status &>/dev/null; then
+    if [ -n "${GH_TOKEN:-}" ]; then
+      echo "$GH_TOKEN" | gh auth login --with-token
+      echo "GitHub CLI: authenticated via GH_TOKEN"
+    else
+      echo "GitHub CLI: not authenticated. Set GH_TOKEN or run 'gh auth login -p https -w'"
+    fi
+  else
+    echo "GitHub CLI: already authenticated"
+  fi
+fi
+
+# 5. Create ~/projects if missing
 mkdir -p ~/projects
 echo "Projects directory: ~/projects/"
 
-# 5. Install plugins
+# 6. Install plugins
 echo "Installing plugins..."
 PLUGINS=(
   frontend-design
